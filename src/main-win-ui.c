@@ -27,7 +27,6 @@ static const char main_menu_xml[] =
 "<menubar>"
   "<menu action='FileMenu'>"
     "<menuitem action='New'/>"
-    "<menuitem action='NewTab'/>"
     "<separator/>"
     "<menu action='CreateNew'>"
       "<menuitem action='NewFolder'/>"
@@ -36,7 +35,6 @@ static const char main_menu_xml[] =
     "<separator/>"
     "<menuitem action='Prop'/>"
     "<separator/>"
-    "<menuitem action='CloseTab'/>"
     "<menuitem action='Close'/>"
   "</menu>"
   "<menu action='EditMenu'>"
@@ -101,8 +99,6 @@ static const char main_menu_xml[] =
     "<menu action='Toolbar'>"
       "<menuitem action='ShowToolbar'/>"
       "<separator/>"
-      "<menuitem action='ToolbarNewWin'/>"
-      "<menuitem action='ToolbarNewTab'/>"
       "<menuitem action='ToolbarNav'/>"
       "<menuitem action='ToolbarHome'/>"
     "</menu>"
@@ -167,15 +163,12 @@ static const char main_menu_xml[] =
   "</menu>"
 "</menubar>"
 "<toolbar>"
-    "<toolitem action='New'/>"
-    "<toolitem action='NewTab'/>"
 #if FM_CHECK_VERSION(1, 2, 0)
     "<toolitem action='Prev'/>"
 #endif
     "<toolitem action='Next'/>"
     "<toolitem action='Up'/>"
-    "<toolitem action='Home'/>"
-    "<toolitem action='Go'/>"
+    "<toolitem action='Reload'/>"
 "</toolbar>"
 "<accelerator action='Location2'/>"
 "<accelerator action='Prev2'/>"
@@ -189,12 +182,10 @@ static GtkActionEntry main_win_actions[]=
 {
     {"FileMenu", NULL, N_("_File"), NULL, NULL, NULL},
         {"New", GTK_STOCK_NEW, N_("_New Window"), "<Ctrl>N", N_("Open new file manager window"), G_CALLBACK(on_new_win)},
-        {"NewTab", "tab-new", N_("New T_ab"), "<Ctrl>T", N_("Create new tab for this folder"), G_CALLBACK(on_new_tab)},
         {"CreateNew", GTK_STOCK_ADD, N_("C_reate New..."), "", NULL, NULL},
             {"NewFolder", "folder", N_("Folder"), "<Ctrl><Shift>N", NULL, G_CALLBACK(bounce_action)},
             {"NewBlank", NULL, N_("Empty File"), "<Ctrl><Alt>N", NULL, G_CALLBACK(bounce_action)},
         {"Prop", GTK_STOCK_PROPERTIES, N_("Folder Propertie_s"), NULL, NULL, G_CALLBACK(bounce_action)},
-        {"CloseTab", GTK_STOCK_CLOSE, N_("_Close Tab"), "<Ctrl>W", NULL, G_CALLBACK(on_close_tab)},
         {"Close", GTK_STOCK_QUIT, N_("Close _Window"), "<Ctrl>Q", NULL, G_CALLBACK(on_close_win)},
     {"EditMenu", NULL, N_("_Edit"), NULL, NULL, NULL},
         {"Open", GTK_STOCK_OPEN, NULL, "", NULL, G_CALLBACK(on_open)},
@@ -280,8 +271,6 @@ static GtkToggleActionEntry main_win_toggle_actions[]=
             N_("Check to remember view and sort as folder setting rather than global one"),
             G_CALLBACK(on_save_per_folder), FALSE},
     {"ShowToolbar", NULL, N_("_Show Toolbar"), NULL, NULL, G_CALLBACK(on_show_toolbar), TRUE},
-    {"ToolbarNewWin", NULL, N_("Show 'New _Window' Button"), NULL, NULL, G_CALLBACK(on_toolbar_new_win), TRUE},
-    {"ToolbarNewTab", NULL, N_("Show 'New _Tab' Button"), NULL, NULL, G_CALLBACK(on_toolbar_new_tab), TRUE},
     {"ToolbarNav", NULL, N_("Show _Navigation Buttons"), NULL, NULL, G_CALLBACK(on_toolbar_nav), TRUE},
     {"ToolbarHome", NULL, N_("Show '_Home' Button"), NULL, NULL, G_CALLBACK(on_toolbar_home), TRUE},
     {"ShowSidePane", NULL, N_("Sho_w Side Pane"), "F9", NULL, G_CALLBACK(on_show_side_pane), TRUE},

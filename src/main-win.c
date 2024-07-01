@@ -61,8 +61,6 @@ static void on_unrealize(GtkWidget* widget);
 static void bounce_action(GtkAction* act, FmMainWin* win);
 
 static void on_new_win(GtkAction* act, FmMainWin* win);
-static void on_new_tab(GtkAction* act, FmMainWin* win);
-static void on_close_tab(GtkAction* act, FmMainWin* win);
 static void on_close_win(GtkAction* act, FmMainWin* win);
 static void on_open(GtkAction* act, FmMainWin* win);
 
@@ -103,8 +101,6 @@ static void on_save_per_folder(GtkToggleAction* act, FmMainWin* win);
 static void on_show_side_pane(GtkToggleAction* act, FmMainWin* win);
 static void on_dual_pane(GtkToggleAction* act, FmMainWin* win);
 static void on_show_toolbar(GtkToggleAction *action, FmMainWin *win);
-static void on_toolbar_new_win(GtkToggleAction *act, FmMainWin *win);
-static void on_toolbar_new_tab(GtkToggleAction *act, FmMainWin *win);
 static void on_toolbar_nav(GtkToggleAction *act, FmMainWin *win);
 static void on_toolbar_home(GtkToggleAction *act, FmMainWin *win);
 static void on_show_status(GtkToggleAction *action, FmMainWin *win);
@@ -946,8 +942,8 @@ static void fm_main_win_init(FmMainWin *win)
     if (atk_obj)
         atk_object_set_name(atk_obj, _("History"));
 
-    gtk_box_pack_start( vbox, menubar, FALSE, TRUE, 0 );
     gtk_box_pack_start( vbox, GTK_WIDGET(win->toolbar), FALSE, TRUE, 0 );
+    gtk_box_pack_start( vbox, menubar, FALSE, TRUE, 0 );
 
     /* load bookmarks menu */
     load_bookmarks(win, ui);
@@ -1478,32 +1474,10 @@ static void on_new_win(GtkAction* act, FmMainWin* win)
     fm_main_win_add_win(win, path);
 }
 
-static void on_new_tab(GtkAction* act, FmMainWin* win)
-{
-    FmPath* path = fm_tab_page_get_cwd(win->current_page);
-    fm_main_win_add_tab(win, path);
-    /* FR #1967725: focus location bar for newly created tab */
-    gtk_window_set_focus(GTK_WINDOW(win), GTK_WIDGET(win->location));
-    if (win->idle_handler)
-    {
-        /* it will steal focus so cancel it */
-        g_source_remove(win->idle_handler);
-        win->idle_handler = 0;
-    }
-}
-
 static void on_close_win(GtkAction* act, FmMainWin* win)
 {
     gtk_widget_destroy(GTK_WIDGET(win));
 }
-
-static void on_close_tab(GtkAction* act, FmMainWin* win)
-{
-    GtkNotebook* nb = win->notebook;
-    /* remove current page */
-    gtk_notebook_remove_page(nb, gtk_notebook_get_current_page(nb));
-}
-
 
 static void on_go(GtkAction* act, FmMainWin* win)
 {
@@ -1853,25 +1827,6 @@ static void on_show_toolbar(GtkToggleAction *action, FmMainWin *win)
     gboolean active = gtk_toggle_action_get_active(action);
 
     app_config->tb.visible = active;
-    fm_config_emit_changed(fm_config, "toolsbar");
-    pcmanfm_save_config(FALSE);
-}
-
-/* toolbar items: NewWin NewTab Prev (Hist) Next Up Home (Location) Go */
-static void on_toolbar_new_win(GtkToggleAction *act, FmMainWin *win)
-{
-    gboolean active = gtk_toggle_action_get_active(act);
-
-    app_config->tb.new_win = active;
-    fm_config_emit_changed(fm_config, "toolsbar");
-    pcmanfm_save_config(FALSE);
-}
-
-static void on_toolbar_new_tab(GtkToggleAction *act, FmMainWin *win)
-{
-    gboolean active = gtk_toggle_action_get_active(act);
-
-    app_config->tb.new_tab = active;
     fm_config_emit_changed(fm_config, "toolsbar");
     pcmanfm_save_config(FALSE);
 }
