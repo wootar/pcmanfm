@@ -80,9 +80,9 @@ IT_PROG_INTLTOOL([0.40.0])
 dnl libgtk version
 AC_ARG_WITH(gtk,
     [AC_HELP_STRING([--with-gtk=VER],
-        [choose Gtk+ version for libfm-gtk build (default=2)])],
+        [choose Gtk+ version for libfm-gtk build (default=3)])],
     [ac_with_gtk="${withval}"],
-    [ac_with_gtk=2])
+    [ac_with_gtk=3])
 
 # Checks for libraries.
 
@@ -97,12 +97,12 @@ AC_SUBST(GIO_LIBS)
 
 fm_modules="$gio_modules glib-2.0 pango >= 1.20.0 libfm >= 1.0"
 case "$ac_with_gtk" in
-    3|3.*)
+    2|2.*)
         CFLAGS="$CFLAGS -Wno-deprecated-declarations"
-        fm_modules="$fm_modules gtk+-3.0 libfm-gtk3 >= 1.0.1"
+        fm_modules="$fm_modules gtk+-2.0 libfm-gtk >= 1.0.1"
         ;;
     *)
-        fm_modules="$fm_modules gtk+-2.0 libfm-gtk >= 1.0.1"
+        fm_modules="$fm_modules gtk+-3.0 libfm-gtk3 >= 1.0.1"
         ;;
 esac
 PKG_CHECK_MODULES(FM, [$fm_modules])
