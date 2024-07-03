@@ -496,7 +496,7 @@ static void fm_app_config_init(FmAppConfig *cfg)
     cfg->media_in_new_tab = FALSE;
     cfg->desktop_folder_new_win = FALSE;
 
-    cfg->side_pane_mode = FM_SP_PLACES;
+    cfg->side_pane_mode = FM_SP_DIR_TREE;
 
     cfg->view_mode = FM_FV_ICON_VIEW;
     cfg->show_hidden = FALSE;
@@ -691,34 +691,6 @@ void fm_app_config_load_from_key_file(FmAppConfig* cfg, GKeyFile* kf)
     fm_key_file_get_bool(kf, "ui", "desktop_folder_new_win", &cfg->desktop_folder_new_win);
     fm_key_file_get_bool(kf, "ui", "change_tab_on_drop", &cfg->change_tab_on_drop);
     fm_key_file_get_bool(kf, "ui", "close_on_unmount", &cfg->close_on_unmount);
-
-#if FM_CHECK_VERSION(1, 2, 0)
-    fm_key_file_get_bool(kf, "ui", "focus_previous", &cfg->focus_previous);
-    tmp_int = FM_SP_NONE;
-    tmpv = g_key_file_get_string_list(kf, "ui", "side_pane_mode", NULL, NULL);
-    if (tmpv)
-    {
-        for (i = 0; tmpv[i]; i++)
-        {
-            tmp = tmpv[i];
-            if (strcmp(tmp, "hidden") == 0)
-                tmp_int |= FM_SP_HIDE;
-            else
-            {
-                tmp_int &= ~FM_SP_MODE_MASK;
-                if (tmp[0] >= '0' && tmp[0] <= '9') /* backward compatibility */
-                    tmp_int |= atoi(tmp);
-                else /* portable way */
-                    tmp_int |= fm_side_pane_get_mode_by_name(tmp);
-            }
-        }
-        g_strfreev(tmpv);
-    }
-    if ((tmp_int & FM_SP_MODE_MASK) != FM_SP_NONE)
-#else
-    if(fm_key_file_get_int(kf, "ui", "side_pane_mode", &tmp_int))
-#endif
-        cfg->side_pane_mode = (FmSidePaneMode)tmp_int;
 
     /* default values for folder views */
 #if FM_CHECK_VERSION(1, 0, 2)
